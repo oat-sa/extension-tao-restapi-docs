@@ -1,6 +1,6 @@
 {
 
-    "name": "oat/taoRestApiDocs",
+    "name": "oat/extension-tao-restapi-docs",
     "description" : "Documentation of the TAO Rest API. Collect and view.",
     "type" : "tao-extension",
     "authors" : [
