@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE structures SYSTEM "../../tao/doc/structures.dtd">
+<structures>
+	<structure id="taoRestApiDocs_main" name="RestAPI" level="16" group="main">
+		<description>Docmentation for Rest API</description>
+        <icon id="icon-graphic-associate" src=""/>
+		<sections>
+			<section id="taoRestApiDocs_main" name="TAO Rest API documentation" url="/taoRestApiDocs/TaoRestApiDocs/index" />
+		</sections>
+	</structure>
+</structures>
