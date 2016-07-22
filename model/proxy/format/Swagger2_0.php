@@ -122,7 +122,7 @@ class Swagger2_0 implements DocsProxyInterface
                 : $part->paths;
         
 
-        $docs->tags = (object) array_merge((array) $docs->tags, [$extensionTag], (array) $part->tags);
+        $docs->tags = array_merge((array) $docs->tags, [$extensionTag], (array)$part->tags);
 
         return $docs;
     }

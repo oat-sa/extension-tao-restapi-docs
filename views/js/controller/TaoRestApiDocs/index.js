@@ -18,14 +18,28 @@
  * @author Alexander Zagovorichev <zagovorichev@1pt.com>
  */
 
-define(function(){
+define([
+    'jquery',
+    'lodash',
+    'i18n'
+], function($, _, __) {
     'use strict';
-    
+
+    /**
+     * The Swagger controller
+     * @exports taoRestApiDocs/controller/TaoRestApiDocs/index
+     */
     return {
-        'TaoRestApiDocs': {
-            'actions': {
-                'index': 'controller/TaoRestApiDocs/index'
-            }
+
+        /**
+         * controller dispatch entry point
+         */
+        start : function start(){
+
+            var swagger = new SwaggerUi({
+                
+            });
         }
     };
 });
+

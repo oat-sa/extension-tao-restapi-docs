@@ -102,9 +102,4 @@ class DocsServiceTest extends TaoPhpUnitTestRunner
         $service = new DocsService(['proxy' => Swagger2_0::class]);
         $this->assertEquals(DocsService::class, get_class($service));
     }
-    
-    public function testSaveDocs()
-    {
-        $docs = $this->service->generateDocs()->saveDocs();
-    }
 }

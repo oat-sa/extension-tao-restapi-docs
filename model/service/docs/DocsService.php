@@ -109,18 +109,17 @@ class DocsService extends ConfigurableService implements DocsInterface
             throw new RestApiDocsException(__('Please, run generateDocs before save'));
         }
         
-        //write json 
-        $this->getStorage()->write(self::FILE_NAME, $this->generatedDocs);
+        
+        $this->dropDocs();
 
+        //write json
+        $this->getStorage()->write(self::FILE_NAME, json_encode($this->generatedDocs));
+        
         // save new configuration for the documentation
-        $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoRestApiDocs');
-        $passwordsConfig = $ext->getConfig('docs');
-        $passwordsConfig['constrains'] = [
-            'length' => 10,
-            'upper' => true,
-            'spec' => true,
-        ];
-        $ext->setConfig('passwords', $passwordsConfig);
+        $serviceManager = ServiceManager::getServiceManager();
+        $fs = $serviceManager->get(FileSystemService::SERVICE_ID);
+        $fs->getFileSystem('taoRestApiDocs');
+        $serviceManager->register(FileSystemService::SERVICE_ID, $fs);
     }
 
     public function removeDoc($path = '')
