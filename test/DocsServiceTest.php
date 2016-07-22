@@ -23,6 +23,7 @@ namespace oat\taoRestApiDocs\test\docs;
 
 
 use oat\tao\test\TaoPhpUnitTestRunner;
+use oat\taoRestApiDocs\model\proxy\format\Swagger2_0;
 use oat\taoRestApiDocs\model\service\docs\DocsService;
 
 /**
@@ -36,66 +37,75 @@ class DocsServiceTest extends TaoPhpUnitTestRunner
      * @var DocsService
      */
     private $service = null;
-    
+
+    private $samplesPath;
+
     public function setUp()
     {
         parent::setUp();
         
-        $samplesPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR;
+        $this->samplesPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR;
         
-        $this->service = new DocsService();
+        $this->service = new DocsService([
+            DocsService::OPTION_DOCS => [
+                $this->samplesPath . 'lti.json',
+                $this->samplesPath . 'QtiItem.json',
+            ],
+            DocsService::OPTION_PROXY => Swagger2_0::class,
+        ]);
     }
     
-    public function tearDown()
+    /**
+     * @expectedException \oat\taoRestApiDocs\model\exception\RestApiDocsException
+     * @expectedExceptionMessage File with documentation not found
+     */
+    public function testAddDocException()
     {
-        $this->service->dropDocs();
-        parent::tearDown();
+        $this->service->addDoc('');
     }
 
     /**
      * @expectedException \oat\taoRestApiDocs\model\exception\RestApiDocsException
+     * @expectedExceptionMessage Incorrect file structure
      */
-    public function testInvalidConfigException()
+    public function testAddInvalidDoc()
     {
-        new DocsService([]);
-    }
-
-    /**
-     * @expectedException \oat\taoRestApiDocs\model\exception\RestApiDocsException
-     */
-    public function testWithoutSwaggerPhpDoc()
-    {
-        new DocsService(['proxy' => 'Swagger', 'routes' => ['Example' => '\oat\taoRestAPI\test\docs\DocsServiceTest']]);
-    }
-
-    /**
-     * @expectedException \oat\taoRestApiDocs\model\exception\RestApiDocsException
-     */
-    public function testIncorrectSection()
-    {
-        $this->service->generateDocs('FailureService');
-    }
-
-
-    public function testGenerateSectionDocs()
-    {
-        $data = $this->service->generateDocs('Lti');
-
-        $this->assertTrue(isset($data));
-        $this->assertEquals('2.0', $data->swagger);
-        $this->assertEquals("Lti REST API", $data->info->title);
-    }
-
-    public function testGenerateDocs()
-    {
-        $data = $this->service->generateDocs();
-
-        $this->assertTrue(isset($data));
-        $this->assertEquals('2.0', $data->swagger);
+        $this->service->addDoc($this->samplesPath . 'failure.json');
     }
     
-    public function testJsonDocs()
+    
+    public function testGenerateDoc()
     {
-        $data = $this->service->jsonDocs();
+        $docs = $this->service->generateDocs()->getDocs();
+        $this->assertEquals('2.0', $docs->swagger);
+    }
+
+    /**
+     * @expectedException \oat\taoRestApiDocs\model\exception\RestApiDocsException
+     * @expectedExceptionMessage Proxy does not exists
+     */
+    public function testDocsProxyNotExists()
+    {
+        new DocsService(['proxy' => 'Failure']);
+    }
+
+    /**
+     * @expectedException \oat\taoRestApiDocs\model\exception\RestApiDocsException
+     * @expectedExceptionMessage Incorrect proxy for Restful documentations
+     */
+    public function testInvalidDocsProxy()
+    {
+        new DocsService(['proxy' => \stdClass::class]);
+    }
+    
+    public function testValidDocsProxy()
+    {
+        $service = new DocsService(['proxy' => Swagger2_0::class]);
+        $this->assertEquals(DocsService::class, get_class($service));
+    }
+    
+    public function testSaveDocs()
+    {
+        $docs = $this->service->generateDocs()->saveDocs();
     }
 }

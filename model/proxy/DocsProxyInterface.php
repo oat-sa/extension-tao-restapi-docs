@@ -19,23 +19,24 @@
  * @author Alexander Zagovorichev <zagovorichev@1pt.com>
  */
 
-namespace oat\taoRestApiDocs\scripts\install;
+namespace oat\taoRestApiDocs\model\proxy;
 
 
-use oat\taoRestApiDocs\model\service\docs\DocsService;
-
-class RegisterRestApiDocsStorage extends \common_ext_action_InstallAction
+interface DocsProxyInterface
 {
-    public function __invoke($params)
-    {
-        // create new storage for docs
-        $dataPath = FILES_PATH . 'taoRestAPI' . DIRECTORY_SEPARATOR. DocsService::OPTION_STORAGE . DIRECTORY_SEPARATOR;
-        if (file_exists($dataPath)) {
-            \helpers_File::emptyDirectory($dataPath);
-        }
 
-        /** @var \core_kernel_versioning_Repository $source */
-        $source = \tao_models_classes_FileSourceService::singleton()->addLocalSource('docsDirectory', $dataPath);
-        \taoItems_models_classes_ItemsService::singleton()->setDefaultFileSource($source);
-    }
+    /**
+     * @param \stdClass $swagger
+     * @return boolean
+     */
+    public function valid(\stdClass $swagger);
+    
+    /**
+     * Append new part into the docs
+     * 
+     * @param \stdClass $part
+     * @param \stdClass $docs
+     * @return \stdClass docs with included part
+     */
+    public function append(\stdClass $docs, \stdClass $part);
 }

@@ -24,8 +24,46 @@ namespace oat\taoRestApiDocs\model\service;
 
 interface DocsInterface
 {
-
     const SERVICE_ID = 'taoRestApiDocs/delivery';
+
+    /**
+     * Return cached documentation from the storage
+     * @return mixed
+     */
+    public function getDocs();
     
-    
+    /**
+     * Add new doc file to list of the docs 
+     * 
+     * @param string $path - path to the file with documentation
+     * @return DocsInterface
+     */
+    public function addDoc($path = '');
+
+    /**
+     * Run generation of the documentation
+     * 
+     * @return DocsInterface
+     */
+    public function generateDocs();
+
+    /**
+     * Write new documentation into the storage and save new configuration for the service
+     * @return DocsInterface
+     */
+    public function saveDocs();
+
+    /**
+     * Remove doc file from the list of the docs
+     * @param string $path
+     * @return DocsInterface
+     */
+    public function removeDoc($path = '');
+
+    /**
+     * Delete current documentation from the storage
+     * (configuration file is not touched)
+     * @return mixed
+     */
+    public function dropDocs();
 }

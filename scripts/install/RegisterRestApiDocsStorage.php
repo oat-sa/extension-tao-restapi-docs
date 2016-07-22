@@ -19,15 +19,19 @@
  * @author Alexander Zagovorichev <zagovorichev@1pt.com>
  */
 
-namespace oat\taoRestApiDocs\model\service;
+namespace oat\taoRestApiDocs\scripts\install;
 
 
-interface DocsProxyInterface extends DocsInterface
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\ServiceManager;
+
+class RegisterRestApiDocsStorage extends \common_ext_action_InstallAction
 {
-
-    /**
-     * Get all docs
-     * @return array of Json By sections
-     */
-    public function generate();
+    public function __invoke($params)
+    {
+        $serviceManager = ServiceManager::getServiceManager();
+        $fs = $serviceManager->get(FileSystemService::SERVICE_ID);
+        $fs->createLocalFileSystem('taoRestApiDocs');
+        $serviceManager->register(FileSystemService::SERVICE_ID, $fs);
+    }
 }

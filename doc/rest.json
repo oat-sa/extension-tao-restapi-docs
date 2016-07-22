@@ -1,0 +1,28 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "TAO RestApi Documentation",
+    "description": "Rest API interface for TAO.\n\n[Learn about TAO](http://www.taotesting.com/).",
+    "termsOfService": "http://www.taotesting.com/resources/faq/",
+    "contact": {
+      "name": "Open Assessment Technologies S.A.",
+      "email": "contact@taotesting.com",
+      "url": "http://www.taotesting.com/contact/"
+    },
+    "license": {
+      "name": "GNU General Public License",
+      "url": "http://www.gnu.org/licenses/gpl.html"
+    }
+  },
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "basePath": "/",
+  "tags": {},
+  "paths": {}
+}

@@ -34,6 +34,9 @@ return array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoRestApiDocsManager', array('ext'=>'taoRestApiDocs')),
     ),
     'install' => array(
+        'php' => [
+            \oat\taoRestApiDocs\scripts\install\RegisterRestApiDocsStorage::class
+        ]
     ),
     'uninstall' => array(
     ),
