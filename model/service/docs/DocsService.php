@@ -35,7 +35,6 @@ use oat\taoRestApiDocs\model\service\DocsInterface;
  * Class DocsService
  * 
  * Generate documentation for Rest API from all extensions
- * @package oat\taoRestAPI\service\docs
  */
 class DocsService extends ConfigurableService implements DocsInterface
 {

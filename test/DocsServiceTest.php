@@ -28,7 +28,6 @@ use oat\taoRestApiDocs\model\service\docs\DocsService;
 
 /**
  * Class RestApiDocsServiceTest
- * @package oat\taoRestAPI\test\docs
  */
 class DocsServiceTest extends TaoPhpUnitTestRunner
 {

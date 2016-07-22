@@ -27,7 +27,7 @@ return array(
     'version' => '0.0.1',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
-        'taoRestAPI' => '>=0.0.1'
+        'tao' => '>=2.17.0',
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRestApiDocsManager',
     'acl' => array(
