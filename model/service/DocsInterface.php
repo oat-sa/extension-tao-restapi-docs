@@ -24,7 +24,7 @@ namespace oat\taoRestApiDocs\model\service;
 
 interface DocsInterface
 {
-    const SERVICE_ID = 'taoRestApiDocs/delivery';
+    const SERVICE_ID = 'taoRestApiDocs/docs';
 
     /**
      * Return cached documentation from the storage
