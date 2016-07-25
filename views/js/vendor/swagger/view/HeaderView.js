@@ -6,54 +6,60 @@
 
 define([
     'jquery',
-    'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/SwaggerUi'
-],function ($, Backbone, SwaggerUi) {
+    'core/eventifier',
+    'taoRestApiDocs/vendor/lib/backbone-min'
+], function ($, eventifier, Backbone) {
     'use strict';
 
-    SwaggerUi.Views.HeaderView = Backbone.View.extend({
-        events: {
-            'click #show-pet-store-icon': 'showPetStore',
-            'click #explore': 'showCustom',
-            'keyup #input_baseUrl': 'showCustomOnKeyup',
-            'keyup #input_apiKey': 'showCustomOnKeyup'
-        },
+    return eventifier({
+        extend: function extend(SwaggerUi) {
+            SwaggerUi.Views.HeaderView = Backbone.View.extend({
+                events: {
+                    'click #show-pet-store-icon': 'showPetStore',
+                    'click #explore': 'showCustom',
+                    'keyup #input_baseUrl': 'showCustomOnKeyup',
+                    'keyup #input_apiKey': 'showCustomOnKeyup'
+                },
 
-        initialize: function () {
-        },
+                initialize: function () {
+                },
 
-        showPetStore: function () {
-            this.trigger('update-swagger-ui', {
-                url: 'http://petstore.swagger.io/v2/swagger.json'
+                showPetStore: function () {
+                    this.trigger('update-swagger-ui', {
+                        url: 'http://petstore.swagger.io/v2/swagger.json'
+                    });
+                },
+
+                showCustomOnKeyup: function (e) {
+                    if (e.keyCode === 13) {
+                        this.showCustom();
+                    }
+                },
+
+                showCustom: function (e) {
+                    if (e) {
+                        e.preventDefault();
+                    }
+
+                    this.trigger('update-swagger-ui', {
+                        url: $('#input_baseUrl').val()
+                    });
+                },
+
+                update: function (url, apiKey, trigger) {
+                    if (trigger === undefined) {
+                        trigger = false;
+                    }
+
+                    $('#input_baseUrl').val(url);
+
+                    if (trigger) {
+                        this.trigger('update-swagger-ui', {url: url});
+                    }
+                }
             });
-        },
-
-        showCustomOnKeyup: function (e) {
-            if (e.keyCode === 13) {
-                this.showCustom();
-            }
-        },
-
-        showCustom: function (e) {
-            if (e) {
-                e.preventDefault();
-            }
-
-            this.trigger('update-swagger-ui', {
-                url: $('#input_baseUrl').val()
-            });
-        },
-
-        update: function (url, apiKey, trigger) {
-            if (trigger === undefined) {
-                trigger = false;
-            }
-
-            $('#input_baseUrl').val(url);
-
-            if (trigger) {
-                this.trigger('update-swagger-ui', {url: url});
-            }
+            
+            return SwaggerUi;
         }
     });
 });

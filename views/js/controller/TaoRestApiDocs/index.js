@@ -27,16 +27,26 @@ define([
     'taoRestApiDocs/vendor/swagger/helpers/handlebars',
     'taoRestApiDocs/vendor/swagger/utils/utils',
     'taoRestApiDocs/vendor/swagger/view/HeaderView',
+    'taoRestApiDocs/vendor/lib/jsoneditor.min',
+    'taoRestApiDocs/vendor/lib/SwaggerClient',
     'taoRestApiDocs/vendor/swagger/view/MainView',
     'taoRestApiDocs/vendor/swagger/view/ResourceView',
-    'taoRestApiDocs/vendor/swagger/view/partials/signature',
-    'taoRestApiDocs/vendor/swagger/view/SignatureView',
-    'taoRestApiDocs/vendor/swagger/view/OperationView',
-    'taoRestApiDocs/vendor/swagger/view/ResponseContentTypeView',
-    'taoRestApiDocs/vendor/swagger/view/ParameterView',
-    'taoRestApiDocs/vendor/swagger/view/StatusCodeView',
-    'taoRestApiDocs/vendor/lib/jsoneditor.min'
-], function ($, _, __, helpers, SwaggerUi) {
+    'taoRestApiDocs/vendor/swagger/view/OperationView'
+], function (
+    $, 
+    _, 
+    __, 
+    helpers, 
+    SwaggerUi,
+    Handlebars,
+    Utils,
+    HeaderView,
+    JsonEditor,
+    SwaggerClient,
+    MainView,
+    ResourceView,
+    OperationView
+) {
     'use strict';
 
     /**
@@ -50,7 +60,8 @@ define([
          */
         start: function start() {
 
-            var swagger = new SwaggerUi({
+            var backBone = SwaggerUi.swagger();
+            var swaggerUi = new backBone({
                 url: helpers._url('docs', 'TaoRestApiDocs', 'taoRestApiDocs'),
                 dom_id: "swagger-ui-container",
                 supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
@@ -79,8 +90,110 @@ define([
                 showRequestHeaders: false
             });
 
-            swagger.load();
+            swaggerUi.Views = {};
+            swaggerUi.Models = {};
+            swaggerUi.Collections = {};
+            swaggerUi.partials = {};
+            swaggerUi.utils = {};
+            
+            
+            SwaggerUi.on('load', function(){
+                // Create view to handle the header inputs
+                swaggerUi = HeaderView.extend(swaggerUi);
+                swaggerUi.headerView = new swaggerUi.Views.HeaderView({el: $('#header')});
 
+                // Event handler for when the baseUrl/apiKey is entered by user
+                swaggerUi.headerView.on('update-swagger-ui', function (data) {
+                    return swaggerUi.updateSwaggerUi(data);
+                });
+
+                swaggerUi.headerView.update(swaggerUi.options.url);
+                
+                swaggerUi.api = new SwaggerClient(swaggerUi.options);
+                
+            });
+            
+            
+            SwaggerUi.on('render', function() {
+                var authsModel;
+
+                swaggerUi = MainView.extend(swaggerUi);
+                
+                MainView.on('resource', function(resource, auths) {
+                    
+                    swaggerUi = ResourceView.extend(swaggerUi);
+
+                    var resourceView = new swaggerUi.Views.ResourceView({
+                        model: resource,
+                        router: this.router,
+                        tagName: 'li',
+                        id: 'resource_' + resource.id,
+                        className: 'resource',
+                        auths: auths,
+                        swaggerOptions: swaggerUi.options.swaggerOptions
+                    });
+
+                    swaggerUi = OperationView.extend(swaggerUi);
+                    resourceView.on('operation', function() {
+                        
+                        // Render an operation and add it to operations li
+                        var operationView = new swaggerUi.Views.OperationView({
+                            model: operation,
+                            router: swaggerUi.router,
+                            tagName: 'li',
+                            className: 'endpoint',
+                            swaggerOptions: swaggerUi.options.swaggerOptions,
+                            auths: swaggerUi.auths
+                        });
+
+                        $('.endpoints', $(this.el)).append(operationView.render().el);
+                    });
+                    
+                    $('#resources', this.el).append(resourceView.render().el);
+                });
+                
+                swaggerUi.mainView = new swaggerUi.Views.MainView({
+                    model: swaggerUi.api,
+                    el: $('#' + swaggerUi.dom_id),
+                    swaggerOptions: swaggerUi.options,
+                    router: swaggerUi
+                }).render();
+                
+                if (!_.isEmpty(swaggerUi.api.securityDefinitions)) {
+                    authsModel = _.map(swaggerUi.api.securityDefinitions, function (auth, name) {
+                        var result = {};
+                        result[name] = auth;
+                        return result;
+                    });
+                    swaggerUi.authView = new swaggerUi.Views.AuthButtonView({
+                        data: SwaggerUi.utils.parseSecurityDefinitions(authsModel),
+                        router: swaggerUi
+                    });
+                    $('#auth_container').append(swaggerUi.authView.render().el);
+                }
+
+                swaggerUi.showMessage();
+                switch (swaggerUi.options.docExpansion) {
+                    case 'full':
+                        swaggerUi.expandAll();
+                        break;
+                    case 'list':
+                        swaggerUi.listAll();
+                        break;
+                    default:
+                        break;
+                }
+                this.renderGFM();
+
+                if (swaggerUi.options.onComplete) {
+                    swaggerUi.options.onComplete(swaggerUi.api, swaggerUi);
+                }
+
+                setTimeout(Docs.shebang.bind(swaggerUi), 100);
+            });
+            
+            swaggerUi.load();
+            
             function log() {
                 if ('console' in window) {
                     console.log.apply(console, arguments);
