@@ -24,7 +24,17 @@ define([
     'i18n',
     'helpers',
     'taoRestApiDocs/vendor/swagger/SwaggerUi',
+    'taoRestApiDocs/vendor/swagger/helpers/handlebars',
+    'taoRestApiDocs/vendor/swagger/utils/utils',
     'taoRestApiDocs/vendor/swagger/view/HeaderView',
+    'taoRestApiDocs/vendor/swagger/view/MainView',
+    'taoRestApiDocs/vendor/swagger/view/ResourceView',
+    'taoRestApiDocs/vendor/swagger/view/partials/signature',
+    'taoRestApiDocs/vendor/swagger/view/SignatureView',
+    'taoRestApiDocs/vendor/swagger/view/OperationView',
+    'taoRestApiDocs/vendor/swagger/view/ResponseContentTypeView',
+    'taoRestApiDocs/vendor/swagger/view/ParameterView',
+    'taoRestApiDocs/vendor/swagger/view/StatusCodeView',
     'taoRestApiDocs/vendor/lib/jsoneditor.min'
 ], function ($, _, __, helpers, SwaggerUi) {
     'use strict';

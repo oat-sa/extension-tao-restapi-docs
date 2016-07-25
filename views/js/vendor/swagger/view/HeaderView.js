@@ -1,3 +1,9 @@
+/**
+ * Changes (AMDify) by A.Zagovorichev for Open Assessment Technologies, S.A.
+ *
+ * @author A.Zagovorichev, <zagovorichev@1pt.com>
+ */
+
 define([
     'jquery',
     'taoRestApiDocs/vendor/lib/backbone-min',

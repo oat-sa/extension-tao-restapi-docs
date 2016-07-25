@@ -52,6 +52,6 @@ class TaoRestApiDocs extends \tao_actions_CommonModule
     public function docs()
     {
         /** @var DocsService $docsService */
-        return $this->getServiceManager()->get(DocsService::SERVICE_ID)->getDocs();
+        return $this->returnJson($this->getServiceManager()->get(DocsService::SERVICE_ID)->getDocs());
     }
 }
