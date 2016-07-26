@@ -9,10 +9,9 @@ define([
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/lodash.min',
     'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/SwaggerUi',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
     'taoRestApiDocs/vendor/swagger/templates'
-], function ($, eventifier, _, Backbone, SwaggerUi, Handlebars) {
+], function ($, eventifier, _, Backbone, Handlebars) {
 
     'use strict';
 
@@ -281,7 +280,7 @@ define([
                     if (Array.isArray(this.model.security)) {
                         var authsModel = SwaggerUi.utils.parseSecurityDefinitions(this.model.security);
 
-                        authsModel.isLogout = !_.isEmpty(window.swaggerUi.api.clientAuthorizations.authz);
+                        authsModel.isLogout = !_.isEmpty(SwaggerUi.api.clientAuthorizations.authz);
                         this.authView = new SwaggerUi.Views.AuthButtonView({
                             data: authsModel,
                             router: this.router,

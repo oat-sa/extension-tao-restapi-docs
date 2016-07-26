@@ -29,18 +29,24 @@ define([
     'taoRestApiDocs/vendor/swagger/view/HeaderView',
     'taoRestApiDocs/vendor/lib/jsoneditor.min',
     'taoRestApiDocs/vendor/lib/SwaggerClient',
+    
     'taoRestApiDocs/vendor/swagger/view/MainView',
     'taoRestApiDocs/vendor/swagger/view/ResourceView',
     'taoRestApiDocs/vendor/swagger/view/OperationView',
     'taoRestApiDocs/vendor/swagger/doc',
     'taoRestApiDocs/vendor/swagger/view/AuthButtonView',
+    'taoRestApiDocs/vendor/swagger/view/partials/signature',
+    'taoRestApiDocs/vendor/swagger/view/SignatureView',
+    'taoRestApiDocs/vendor/swagger/view/ResponseContentTypeView',
+    'taoRestApiDocs/vendor/swagger/view/ParameterView',
+    'taoRestApiDocs/vendor/swagger/view/StatusCodeView',
     
     // helpers
     'taoRestApiDocs/vendor/lib/helpers/object-assign-pollyfill',
     'taoRestApiDocs/vendor/lib/helpers/jquery.slideto.min',
     'taoRestApiDocs/vendor/lib/helpers/jquery.wiggle.min',
-    'taoRestApiDocs/vendor/lib/helpers/highlight.9.1.0.pack'/*,
-    'taoRestApiDocs/vendor/lib/helpers/swagger-oauth'*/
+    'taoRestApiDocs/vendor/lib/helpers/highlight.9.1.0.pack'
+    /*'taoRestApiDocs/vendor/lib/helpers/swagger-oauth'*/
 ], function (
     $, 
     _, 
@@ -52,11 +58,17 @@ define([
     HeaderView,
     JsonEditor,
     SwaggerClient,
+    
     MainView,
     ResourceView,
     OperationView,
     Docs,
-    AuthButtonView
+    AuthButtonView,
+    PartialsSignature,
+    SignatureView,
+    ResponseContentTypeView,
+    ParameterView,
+    StatusCodeView
 ) {
     'use strict';
 
@@ -130,45 +142,53 @@ define([
                 swaggerUi.api = new SwaggerClient(swaggerUi.options);
                 
             });
-            
-            
+
+
+            swaggerUi = MainView.extend(swaggerUi);
+            swaggerUi = PartialsSignature.extend(swaggerUi);
+            swaggerUi = SignatureView.extend(swaggerUi);
+            swaggerUi = ParameterView.extend(swaggerUi);
+            swaggerUi = StatusCodeView.extend(swaggerUi);
+            swaggerUi = ResponseContentTypeView.extend(swaggerUi);
+            swaggerUi = ResourceView.extend(swaggerUi);
+            swaggerUi = OperationView.extend(swaggerUi);
+            swaggerUi = Utils.bind(swaggerUi);
+            swaggerUi = AuthButtonView.extend(swaggerUi);
+
+
             SwaggerUi.on('render', function() {
                 var authsModel;
-
-                swaggerUi = MainView.extend(swaggerUi);
                 
                 MainView.on('resource', function(options) {
                     
-                    swaggerUi = ResourceView.extend(swaggerUi);
-
                     var resourceView = new swaggerUi.Views.ResourceView({
                         model: options.resource,
-                        router: swaggerUi.router,
+                        router: swaggerUi,
                         tagName: 'li',
                         id: 'resource_' + options.resource.id,
                         className: 'resource',
                         auths: options.auths,
-                        swaggerOptions: swaggerUi.options.swaggerOptions
+                        swaggerOptions: swaggerUi.options
                     });
-
-                    swaggerUi = OperationView.extend(swaggerUi);
-                    resourceView.on('operation', function() {
+                    
+                    
+                    ResourceView.on('operation', function(operation) {
                         
                         // Render an operation and add it to operations li
                         var operationView = new swaggerUi.Views.OperationView({
                             model: operation,
-                            router: swaggerUi.router,
+                            router: swaggerUi,
                             tagName: 'li',
                             className: 'endpoint',
-                            swaggerOptions: swaggerUi.options.swaggerOptions,
+                            swaggerOptions: swaggerUi.options,
                             auths: swaggerUi.auths
                         });
 
                         $('.endpoints', $(swaggerUi.el)).append(operationView.render().el);
                     });
-                    
-                    resourceView.on('callDocs', function(options){
-                        Docs[options.fnName](options.e.currentTarget.getAttribute('data-id'));
+
+                    ResourceView.on('call', function(param){
+                        Docs[param.fnName](param.e.currentTarget.getAttribute('data-id'));
                     });
                     
                     $('#resources', swaggerUi.el).append(resourceView.render().el);
@@ -180,8 +200,6 @@ define([
                     swaggerOptions: swaggerUi.options,
                     router: swaggerUi
                 }).render();
-
-                swaggerUi = Utils.bind(swaggerUi);
                 
                 if (!_.isEmpty(swaggerUi.api.securityDefinitions)) {
                     authsModel = _.map(swaggerUi.api.securityDefinitions, function (auth, name) {
@@ -189,8 +207,6 @@ define([
                         result[name] = auth;
                         return result;
                     });
-                    
-                    swaggerUi = AuthButtonView.extend(swaggerUi);
                     
                     swaggerUi.authView = new swaggerUi.Views.AuthButtonView({
                         data: swaggerUi.utils.parseSecurityDefinitions(authsModel),

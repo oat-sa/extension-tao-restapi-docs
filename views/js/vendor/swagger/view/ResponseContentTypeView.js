@@ -5,23 +5,32 @@
  */
 
 define([
-  'jquery',
-  'taoRestApiDocs/vendor/lib/backbone-min',
-  'taoRestApiDocs/vendor/swagger/SwaggerUi',
-  'taoRestApiDocs/vendor/lib/handlebars-2.0.0'
-], function ($, Backbone, SwaggerUi, Handlebars) {
+    'jquery',
+    'core/eventifier',
+    'taoRestApiDocs/vendor/lib/backbone-min',
+    'taoRestApiDocs/vendor/lib/handlebars-2.0.0'
+], function ($, eventifier, Backbone, Handlebars) {
 
-  'use strict';
+    'use strict';
 
-  SwaggerUi.Views.ResponseContentTypeView = Backbone.View.extend({
-    initialize: function () {
-    },
+    return eventifier({
+        extend: function extend(SwaggerUi) {
 
-    render: function () {
-      this.model.responseContentTypeId = 'rct' + Math.random();
-      $(this.el).html(Handlebars.templates.response_content_type(this.model));
-      return this;
-    }
-  });
+            var selfEvent = this;
+
+            SwaggerUi.Views.ResponseContentTypeView = Backbone.View.extend({
+                initialize: function () {
+                },
+
+                render: function () {
+                    this.model.responseContentTypeId = 'rct' + Math.random();
+                    $(this.el).html(Handlebars.templates.response_content_type(this.model));
+                    return this;
+                }
+            });
+            
+            return SwaggerUi;
+        }
+    });
 });
   

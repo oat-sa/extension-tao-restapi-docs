@@ -8,10 +8,9 @@ define([
     'jquery',
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/SwaggerUi',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
     'taoRestApiDocs/vendor/swagger/templates'
-], function ($, eventifier, Backbone, SwaggerUi, Handlebars) {
+], function ($, eventifier, Backbone, Handlebars) {
     'use strict';
 
 
@@ -73,7 +72,7 @@ define([
 
                     this.number++;
                     
-                    selfEvent.trigger('operation');
+                    selfEvent.trigger('operation', operation);
 
                 },
                 // Generic Event handler (`Docs` is global)
@@ -82,7 +81,7 @@ define([
                 callDocs: function (fnName, e) {
                     e.preventDefault();
                     
-                    selfEvent.trigger('callDocs', {fnName: fnName, e: e});
+                    selfEvent.trigger('call', {fnName: fnName, e: e});
                 }
             });
 

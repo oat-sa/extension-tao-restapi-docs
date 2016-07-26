@@ -5,42 +5,49 @@
  */
 
 define([
-  'jquery',
-  'taoRestApiDocs/vendor/lib/backbone-min',
-  'taoRestApiDocs/vendor/swagger/SwaggerUi',
-  'taoRestApiDocs/vendor/lib/handlebars-2.0.0'
-], function ($, Backbone, SwaggerUi, Handlebars) {
+    'jquery',
+    'core/eventifier',
+    'taoRestApiDocs/vendor/lib/backbone-min',
+    'taoRestApiDocs/vendor/lib/handlebars-2.0.0'
+], function ($, eventifier, Backbone, Handlebars) {
 
     'use strict';
 
-    SwaggerUi.Views.StatusCodeView = Backbone.View.extend({
-        initialize: function (opts) {
-            this.options = opts || {};
-            this.router = this.options.router;
-        },
 
-        render: function () {
-            var responseModel, responseModelView;
-            var value = this.router.api.models[this.model.responseModel];
-            $(this.el).html(Handlebars.templates.status_code(this.model));
+    return eventifier({
+        extend: function extend(SwaggerUi) {
+            SwaggerUi.Views.StatusCodeView = Backbone.View.extend({
+                initialize: function (opts) {
+                    this.options = opts || {};
+                    this.router = this.options.router;
+                },
 
-            if (this.router.api.models.hasOwnProperty(this.model.responseModel)) {
-                responseModel = {
-                    sampleJSON: JSON.stringify(SwaggerUi.partials.signature.createJSONSample(value), void 0, 2),
-                    sampleXML: this.model.isXML ? SwaggerUi.partials.signature.createXMLSample('', this.model.schema, this.router.api.models) : false,
-                    isParam: false,
-                    signature: SwaggerUi.partials.signature.getModelSignature(this.model.responseModel, value, this.router.api.models),
-                    defaultRendering: this.model.defaultRendering
-                };
-            } else {
-                responseModel = {
-                    signature: SwaggerUi.partials.signature.getPrimitiveSignature(this.model.schema)
-                };
-            }
+                render: function () {
+                    var responseModel, responseModelView;
+                    var value = this.router.api.models[this.model.responseModel];
+                    $(this.el).html(Handlebars.templates.status_code(this.model));
 
-            responseModelView = new SwaggerUi.Views.SignatureView({model: responseModel, tagName: 'div'});
-            $('.model-signature', this.$el).append(responseModelView.render().el);
-            return this;
+                    if (this.router.api.models.hasOwnProperty(this.model.responseModel)) {
+                        responseModel = {
+                            sampleJSON: JSON.stringify(SwaggerUi.partials.signature.createJSONSample(value), void 0, 2),
+                            sampleXML: this.model.isXML ? SwaggerUi.partials.signature.createXMLSample('', this.model.schema, this.router.api.models) : false,
+                            isParam: false,
+                            signature: SwaggerUi.partials.signature.getModelSignature(this.model.responseModel, value, this.router.api.models),
+                            defaultRendering: this.model.defaultRendering
+                        };
+                    } else {
+                        responseModel = {
+                            signature: SwaggerUi.partials.signature.getPrimitiveSignature(this.model.schema)
+                        };
+                    }
+
+                    responseModelView = new SwaggerUi.Views.SignatureView({model: responseModel, tagName: 'div'});
+                    $('.model-signature', this.$el).append(responseModelView.render().el);
+                    return this;
+                }
+            });
+
+            return SwaggerUi;
         }
     });
 });

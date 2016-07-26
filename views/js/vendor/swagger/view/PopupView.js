@@ -8,14 +8,12 @@ define([
     'jquery',
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/SwaggerUi',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
     'taoRestApiDocs/vendor/swagger/templates'
 ], function (
     $,
     eventifier,
     Backbone,
-    SwaggerUi,
     Handlebars
 ) {
     'use strict';
