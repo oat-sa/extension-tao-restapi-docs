@@ -9,9 +9,10 @@ define([
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/lodash.min',
     'taoRestApiDocs/vendor/lib/backbone-min',
+    'taoRestApiDocs/vendor/swagger/doc',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
     'taoRestApiDocs/vendor/swagger/templates'
-], function ($, eventifier, _, Backbone, Handlebars) {
+], function ($, eventifier, _, Backbone, Docs, Handlebars) {
 
     'use strict';
 

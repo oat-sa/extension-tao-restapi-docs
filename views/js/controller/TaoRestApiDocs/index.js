@@ -204,35 +204,35 @@ define([
                     
                     var resourceView = new swaggerUi.Views.ResourceView({
                         model: options.resource,
-                        router: swaggerUi,
+                        router: options.self.router,
                         tagName: 'li',
                         id: 'resource_' + options.resource.id,
                         className: 'resource',
                         auths: options.auths,
-                        swaggerOptions: swaggerUi.options
+                        swaggerOptions: options.self.options.swaggerOptions
                     });
                     
                     
-                    ResourceView.on('operation', function(operation) {
+                    ResourceView.on('operation', function(opt) {
                         
                         // Render an operation and add it to operations li
                         var operationView = new swaggerUi.Views.OperationView({
-                            model: operation,
-                            router: swaggerUi,
+                            model: opt.operation,
+                            router: opt.self.router,
                             tagName: 'li',
                             className: 'endpoint',
-                            swaggerOptions: swaggerUi.options,
-                            auths: swaggerUi.auths
+                            swaggerOptions: opt.self.options.swaggerOptions,
+                            auths: opt.self.auths
                         });
 
-                        $('.endpoints', $(swaggerUi.el)).append(operationView.render().el);
+                        $('.endpoints', $(opt.self.el)).append(operationView.render().el);
                     });
 
                     ResourceView.on('call', function(param){
                         Docs[param.fnName](param.e.currentTarget.getAttribute('data-id'));
                     });
                     
-                    $('#resources', swaggerUi.el).append(resourceView.render().el);
+                    $('#resources', options.self.el).append(resourceView.render().el);
                 });
                 
                 swaggerUi.mainView = new swaggerUi.Views.MainView({

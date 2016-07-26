@@ -82,7 +82,7 @@ define([
                         });
                     }
 
-                    if ('validatorUrl' in opts.swaggerOptions) {
+                    /*if ('validatorUrl' in opts.swaggerOptions) {
                         // Validator URL specified explicitly
                         this.model.validatorUrl = opts.swaggerOptions.validatorUrl;
                     } else if (this.model.url.indexOf('localhost') > 0 || this.model.url.indexOf('127.0.0.1') > 0) {
@@ -96,7 +96,7 @@ define([
                         else {
                             this.model.validatorUrl = 'http://online.swagger.io/validator';
                         }
-                    }
+                    }*/
 
                     // JSonEditor requires type='object' to be present on defined types, we add it if it's missing
                     // is there any valid case were it should not be added ?
@@ -151,7 +151,7 @@ define([
                     // be loaded by the JSonEditor
                     resource.definitions = this.model.definitions;
 
-                    selfEvent.trigger('resource', {resource: resource, auth: auths});
+                    selfEvent.trigger('resource', {resource: resource, auths: auths, self: this});
                 },
 
                 clear: function () {

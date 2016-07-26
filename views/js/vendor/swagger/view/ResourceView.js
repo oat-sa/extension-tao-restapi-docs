@@ -72,7 +72,7 @@ define([
 
                     this.number++;
                     
-                    selfEvent.trigger('operation', operation);
+                    selfEvent.trigger('operation', {operation: operation, self: this});
 
                 },
                 // Generic Event handler (`Docs` is global)
