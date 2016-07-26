@@ -7,7 +7,7 @@
 define([
     'jquery',
     'core/eventifier',
-    'lodash',
+    'taoRestApiDocs/vendor/lib/lodash.min',
     'taoRestApiDocs/vendor/lib/backbone-min',
     'taoRestApiDocs/vendor/swagger/SwaggerUi',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
@@ -295,6 +295,7 @@ define([
 
                     this.showSnippet();
                     return this;
+                    
                 },
 
                 parseHeadersType: function (headers) {

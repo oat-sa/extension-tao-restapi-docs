@@ -81,7 +81,8 @@ define([
 
                 callDocs: function (fnName, e) {
                     e.preventDefault();
-                    Docs[fnName](e.currentTarget.getAttribute('data-id'));
+                    
+                    selfEvent.trigger('callDocs', {fnName: fnName, e: e});
                 }
             });
 

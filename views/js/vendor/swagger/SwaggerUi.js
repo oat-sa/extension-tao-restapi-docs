@@ -7,7 +7,7 @@
 /*global JSONEditor*/
 define([
     'jquery',
-    'lodash',
+    'taoRestApiDocs/vendor/lib/lodash.min',
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
     'taoRestApiDocs/vendor/swagger/doc',
@@ -246,6 +246,7 @@ define([
     });
 
     // UMD
+/*
     (function (root, factory) {
         if (typeof define === 'function' && define.amd) {
             // AMD. Register as an anonymous module.
@@ -264,6 +265,7 @@ define([
     }(this, function () {
         return SwaggerUi;
     }));
+*/
 
     return SwaggerUi;
 });

@@ -1,53 +1,94 @@
-'use strict';
+/**
+ * Changes (AMDify) by A.Zagovorichev for Open Assessment Technologies, S.A.
+ *
+ * @author A.Zagovorichev, <zagovorichev@1pt.com>
+ */
 
-SwaggerUi.Views.AuthsCollectionView = Backbone.View.extend({
+define([
+    'jquery',
+    'core/eventifier',
+    'taoRestApiDocs/vendor/lib/backbone-min',
+    'taoRestApiDocs/vendor/swagger/view/AuthsCollection',
+    'taoRestApiDocs/vendor/swagger/view/ApiKeyAuthView',
+    'taoRestApiDocs/vendor/swagger/view/BasicAuthView',
+    'taoRestApiDocs/vendor/swagger/view/Oauth2View'
+], function (
+    $,
+    eventifier,
+    Backbone,
+    AuthsCollection,
+    ApiKeyAuthView,
+    BasicAuthView,
+    Oauth2View
+){
+    'use strict';
+    
+    return eventifier({
 
-    initialize: function(opts) {
-        this.options = opts || {};
-        this.options.data = this.options.data || {};
-        this.router = this.options.router;
+        extend: function extend(SwaggerUi) {
+            
+            var selfEvent = this;
 
-        this.collection = new SwaggerUi.Collections.AuthsCollection(opts.data);
+            SwaggerUi.Views.AuthsCollectionView = Backbone.View.extend({
 
-        this.$innerEl = $('<div>');
-        this.authViews = [];
-    },
+                initialize: function (opts) {
+                    this.options = opts || {};
+                    this.options.data = this.options.data || {};
+                    this.router = this.options.router;
 
-    render: function () {
-        this.collection.each(function (auth) {
-            this.renderOneAuth(auth);
-        }, this);
+                    SwaggerUi = AuthsCollection.extend(SwaggerUi);
 
-        this.$el.html(this.$innerEl.html() ? this.$innerEl : '');
+                    this.collection = new SwaggerUi.Collections.AuthsCollection(opts.data);
 
-        return this;
-    },
+                    this.$innerEl = $('<div>');
+                    this.authViews = [];
+                },
 
-    renderOneAuth: function (authModel) {
-        var authViewEl, authView, authViewName;
-        var type = authModel.get('type');
+                render: function () {
+                    this.collection.each(function (auth) {
+                        this.renderOneAuth(auth);
+                    }, this);
 
-        if (type === 'apiKey') {
-            authViewName = 'ApiKeyAuthView';
-        } else if (type === 'basic' && this.$innerEl.find('.basic_auth_container').length === 0) {
-            authViewName = 'BasicAuthView';
-        } else if (type === 'oauth2') {
-            authViewName = 'Oauth2View';
+                    this.$el.html(this.$innerEl.html() ? this.$innerEl : '');
+
+                    return this;
+                },
+
+                renderOneAuth: function (authModel) {
+                    var authViewEl, authView, authViewName;
+                    var type = authModel.get('type');
+
+                    if (type === 'apiKey') {
+                        authViewName = 'ApiKeyAuthView';
+                    } else if (type === 'basic' && this.$innerEl.find('.basic_auth_container').length === 0) {
+                        authViewName = 'BasicAuthView';
+                    } else if (type === 'oauth2') {
+                        authViewName = 'Oauth2View';
+                    }
+
+                    if (authViewName) {
+
+                        SwaggerUi = ApiKeyAuthView.extend(SwaggerUi);
+                        SwaggerUi = BasicAuthView.extend(SwaggerUi);
+                        SwaggerUi = Oauth2View.extend(SwaggerUi);
+                        
+                        authView = new SwaggerUi.Views[authViewName]({model: authModel, router: this.router});
+                        authViewEl = authView.render().el;
+                        this.authViews.push(authView);
+                    }
+
+                    this.$innerEl.append(authViewEl);
+                },
+
+                highlightInvalid: function () {
+                    this.authViews.forEach(function (view) {
+                        view.highlightInvalid();
+                    }, this);
+                }
+
+            });
+            
+            return SwaggerUi;
         }
-
-        if (authViewName) {
-            authView = new SwaggerUi.Views[authViewName]({model: authModel, router: this.router});
-            authViewEl = authView.render().el;
-            this.authViews.push(authView);
-        }
-
-        this.$innerEl.append(authViewEl);
-    },
-
-    highlightInvalid: function () {
-        this.authViews.forEach(function (view) {
-            view.highlightInvalid();
-        }, this);
-    }
-
+    });
 });

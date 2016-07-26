@@ -1,68 +1,107 @@
-'use strict';
+/**
+ * Changes (AMDify) by A.Zagovorichev for Open Assessment Technologies, S.A.
+ *
+ * @author A.Zagovorichev, <zagovorichev@1pt.com>
+ */
 
-SwaggerUi.Views.AuthButtonView = Backbone.View.extend({
-    events: {
-        'click .authorize__btn': 'authorizeBtnClick'
-    },
+define([
+    'jquery',
+    'core/eventifier',
+    'taoRestApiDocs/vendor/lib/backbone-min',
+    'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
+    'taoRestApiDocs/vendor/swagger/view/AuthView',
+    'taoRestApiDocs/vendor/swagger/view/PopupView',
+    'taoRestApiDocs/vendor/swagger/templates'
+], function (
+    $, 
+    eventifier, 
+    Backbone, 
+    Handlebars,
+    AuthView,
+    PopupView
+) {
+    'use strict';
 
-    tpls: {
-        popup: Handlebars.templates.popup,
-        authBtn: Handlebars.templates.auth_button,
-        authBtnOperation: Handlebars.templates.auth_button_operation
-    },
 
-    initialize: function(opts) {
-        this.options = opts || {};
-        this.options.data = this.options.data || {};
-        this.isOperation = this.options.isOperation;
-        this.model = this.model || {};
-        this.router = this.options.router;
-        this.auths = this.options.data.oauth2.concat(this.options.data.auths);
-    },
+    return eventifier({
+        
+        extend: function extend(SwaggerUi) {
 
-    render: function () {
-        var tplName = this.isOperation ? 'authBtnOperation' : 'authBtn';
+            var selfEvent = this;
+            
+            SwaggerUi.Views.AuthButtonView = Backbone.View.extend({
+                events: {
+                    'click .authorize__btn': 'authorizeBtnClick'
+                },
 
-        this.$authEl = this.renderAuths(this.auths);
-        this.$el.html(this.tpls[tplName](this.model));
+                tpls: {
+                    popup: Handlebars.templates.popup,
+                    authBtn: Handlebars.templates.auth_button,
+                    authBtnOperation: Handlebars.templates.auth_button_operation
+                },
 
-        return this;
-    },
+                initialize: function (opts) {
+                    this.options = opts || {};
+                    this.options.data = this.options.data || {};
+                    this.isOperation = this.options.isOperation;
+                    this.model = this.model || {};
+                    this.router = this.options.router;
+                    this.auths = this.options.data.oauth2.concat(this.options.data.auths);
+                },
 
-    authorizeBtnClick: function (e) {
-        var authsModel;
+                render: function () {
+                    var tplName = this.isOperation ? 'authBtnOperation' : 'authBtn';
 
-        e.preventDefault();
+                    this.$authEl = this.renderAuths(this.auths);
+                    this.$el.html(this.tpls[tplName](this.model));
 
-        authsModel = {
-            title: 'Available authorizations',
-            content: this.$authEl
-        };
+                    return this;
+                },
 
-        // The content of the popup is removed and all events unbound after clicking the 'Cancel' button of the popup.
-        // We'll have to re-render the contents before creating a new popup view.
-        this.render();
+                authorizeBtnClick: function (e) {
+                    var authsModel;
 
-        this.popup = new SwaggerUi.Views.PopupView({model: authsModel});
-        this.popup.render();
-    },
+                    e.preventDefault();
 
-    renderAuths: function (auths) {
-        var $el = $('<div>');
-        var isLogout = false;
+                    authsModel = {
+                        title: 'Available authorizations',
+                        content: this.$authEl
+                    };
 
-        auths.forEach(function (auth) {
-            var authView = new SwaggerUi.Views.AuthView({data: auth, router: this.router});
-            var authEl = authView.render().el;
-            $el.append(authEl);
-            if (authView.isLogout) {
-                isLogout = true;
-            }
-        }, this);
+                    // The content of the popup is removed and all events unbound after clicking the 'Cancel' button of the popup.
+                    // We'll have to re-render the contents before creating a new popup view.
+                    this.render();
+                    
+                    SwaggerUi = PopupView.extend(SwaggerUi);
 
-        this.model.isLogout = isLogout;
+                    this.popup = new SwaggerUi.Views.PopupView({model: authsModel});
+                    this.popup.render();
+                },
 
-        return $el;
-    }
+                renderAuths: function (auths) {
+                    var $el = $('<div>');
+                    var isLogout = false;
+
+                    SwaggerUi = AuthView.extend(SwaggerUi);
+                    
+                    auths.forEach(function (auth) {
+                        var authView = new SwaggerUi.Views.AuthView({data: auth, router: this.router});
+                        var authEl = authView.render().el;
+                        $el.append(authEl);
+                        if (authView.isLogout) {
+                            isLogout = true;
+                        }
+                    }, this);
+
+                    this.model.isLogout = isLogout;
+
+                    return $el;
+                }
+
+            });
+            
+            return SwaggerUi;
+        }
+    });
 
 });

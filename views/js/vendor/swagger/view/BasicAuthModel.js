@@ -1,21 +1,46 @@
-'use strict';
+/**
+ * Changes (AMDify) by A.Zagovorichev for Open Assessment Technologies, S.A.
+ *
+ * @author A.Zagovorichev, <zagovorichev@1pt.com>
+ */
 
-SwaggerUi.Models.BasicAuthModel = Backbone.Model.extend({
-    defaults: {
-        username: '',
-        password: '',
-        title: 'basic'
-    },
+define([
+    'jquery',
+    'core/eventifier',
+    'taoRestApiDocs/vendor/lib/backbone-min'
+], function ($,
+             eventifier,
+             Backbone) {
+    'use strict';
 
-    initialize: function () {
-        this.on('change', this.validate);
-    },
 
-    validate: function () {
-        var valid = !!this.get('password') && !!this.get('username');
+    return eventifier({
 
-        this.set('valid', valid);
+        extend: function extend(SwaggerUi) {
 
-        return valid;
-    }
+            var selfEvent = this;
+
+            SwaggerUi.Models.BasicAuthModel = Backbone.Model.extend({
+                defaults: {
+                    username: '',
+                    password: '',
+                    title: 'basic'
+                },
+
+                initialize: function () {
+                    this.on('change', this.validate);
+                },
+
+                validate: function () {
+                    var valid = !!this.get('password') && !!this.get('username');
+
+                    this.set('valid', valid);
+
+                    return valid;
+                }
+            });
+
+            return SwaggerUi;
+        }
+    });
 });

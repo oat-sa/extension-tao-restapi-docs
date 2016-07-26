@@ -6,11 +6,12 @@
 
 define([
     'jquery',
+    'taoRestApiDocs/vendor/lib/lodash.min',
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
     'taoRestApiDocs/vendor/swagger/templates'
-], function ($, eventifier, Backbone, Handlebars) {
+], function ($, _, eventifier, Backbone, Handlebars) {
 
     'use strict';
 

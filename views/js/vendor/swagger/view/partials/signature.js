@@ -5,10 +5,11 @@
  */
 
 define([
-  'jquery',
-  'taoRestApiDocs/vendor/lib/backbone-min',
-  'taoRestApiDocs/vendor/swagger/SwaggerUi'
-], function ($, Backbone, SwaggerUi) {
+    'jquery',
+    'taoRestApiDocs/vendor/lib/lodash.min',
+    'taoRestApiDocs/vendor/lib/backbone-min',
+    'taoRestApiDocs/vendor/swagger/SwaggerUi'
+], function ($, _, Backbone, SwaggerUi) {
 
     'use strict';
 

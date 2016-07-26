@@ -4,7 +4,7 @@
  * @author A.Zagovorichev, <zagovorichev@1pt.com>
  */
 
-define(['jquery', 'lodash'], function ($, _) {
+define(['jquery', 'lodash', 'taoRestApiDocs/vendor/lib/jquery.ba-bbq.min'], function ($, _) {
     'use strict';
 
     var Docs;
