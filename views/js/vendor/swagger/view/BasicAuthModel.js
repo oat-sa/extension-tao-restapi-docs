@@ -18,8 +18,6 @@ define([
 
         extend: function extend(SwaggerUi) {
 
-            var selfEvent = this;
-
             SwaggerUi.Models.BasicAuthModel = Backbone.Model.extend({
                 defaults: {
                     username: '',

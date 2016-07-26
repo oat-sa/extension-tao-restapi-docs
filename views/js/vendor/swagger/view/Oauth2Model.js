@@ -20,8 +20,6 @@ define([
 
         extend: function extend(SwaggerUi) {
 
-            var selfEvent = this;
-            
             SwaggerUi.Models.Oauth2Model = Backbone.Model.extend({
                 defaults: {
                     scopes: {}

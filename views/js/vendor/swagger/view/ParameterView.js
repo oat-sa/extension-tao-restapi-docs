@@ -16,8 +16,6 @@ define([
     return eventifier({
         extend: function extend(SwaggerUi) {
 
-            var selfEvent = this;
-
             SwaggerUi.Views.ParameterView = Backbone.View.extend({
                 events: {
                     'change [name=parameterContentType]': 'toggleParameterSnippet'

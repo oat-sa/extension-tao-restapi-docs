@@ -10,16 +10,12 @@ define([
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
-    'taoRestApiDocs/vendor/swagger/view/AuthsCollectionView'//,
-    //'taoRestApiDocs/vendor/swagger/templates'
-], function (
-    $,
-    _,
-    eventifier,
-    Backbone,
-    Handlebars,
-    AuthsCollectionView
-) {
+    'taoRestApiDocs/vendor/swagger/templates'
+], function ($,
+             _,
+             eventifier,
+             Backbone,
+             Handlebars) {
     'use strict';
 
 
@@ -28,7 +24,7 @@ define([
         extend: function extend(SwaggerUi) {
 
             var selfEvent = this;
-            
+
             /* global redirect_uri:true */
             /* global clientId */
             /* global scopeSeparator */
@@ -57,8 +53,6 @@ define([
                     this.options = opts || {};
                     opts.data = opts.data || {};
                     this.router = this.options.router;
-
-                    SwaggerUi = AuthsCollectionView.extend(SwaggerUi);
 
                     this.authsCollectionView = new SwaggerUi.Views.AuthsCollectionView({data: opts.data});
 
@@ -205,7 +199,7 @@ define([
                 }
 
             });
-            
+
             return SwaggerUi;
         }
     });

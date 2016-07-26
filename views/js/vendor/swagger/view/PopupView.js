@@ -22,8 +22,6 @@ define([
 
         extend: function extend(SwaggerUi) {
 
-            var selfEvent = this;
-
             SwaggerUi.Views.PopupView = Backbone.View.extend({
                 events: {
                     'click .api-popup-cancel': 'cancelClick'

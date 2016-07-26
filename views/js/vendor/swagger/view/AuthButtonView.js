@@ -9,16 +9,12 @@ define([
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
-    'taoRestApiDocs/vendor/swagger/view/AuthView',
-    'taoRestApiDocs/vendor/swagger/view/PopupView',
     'taoRestApiDocs/vendor/swagger/templates'
 ], function (
     $, 
     eventifier, 
     Backbone, 
-    Handlebars,
-    AuthView,
-    PopupView
+    Handlebars
 ) {
     'use strict';
 
@@ -27,8 +23,6 @@ define([
         
         extend: function extend(SwaggerUi) {
 
-            var selfEvent = this;
-            
             SwaggerUi.Views.AuthButtonView = Backbone.View.extend({
                 events: {
                     'click .authorize__btn': 'authorizeBtnClick'
@@ -72,7 +66,6 @@ define([
                     // We'll have to re-render the contents before creating a new popup view.
                     this.render();
                     
-                    SwaggerUi = PopupView.extend(SwaggerUi);
 
                     this.popup = new SwaggerUi.Views.PopupView({model: authsModel});
                     this.popup.render();
@@ -81,8 +74,6 @@ define([
                 renderAuths: function (auths) {
                     var $el = $('<div>');
                     var isLogout = false;
-
-                    SwaggerUi = AuthView.extend(SwaggerUi);
                     
                     auths.forEach(function (auth) {
                         var authView = new SwaggerUi.Views.AuthView({data: auth, router: this.router});

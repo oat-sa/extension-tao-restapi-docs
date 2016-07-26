@@ -8,18 +8,12 @@ define([
     'jquery',
     'taoRestApiDocs/vendor/lib/lodash.min',
     'core/eventifier',
-    'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/view/ApiKeyAuthModel',
-    'taoRestApiDocs/vendor/swagger/view/BasicAuthModel',
-    'taoRestApiDocs/vendor/swagger/view/Oauth2Model'
+    'taoRestApiDocs/vendor/lib/backbone-min'
 ], function (
     $,
     _,
     eventifier,
-    Backbone,
-    ApiKeyAuthModel,
-    BasicAuthModel,
-    Oauth2Model
+    Backbone
 ){
     'use strict';
 
@@ -27,8 +21,6 @@ define([
     return eventifier({
 
         extend: function extend(SwaggerUi) {
-
-            var selfEvent = this;
 
             SwaggerUi.Collections.AuthsCollection = Backbone.Collection.extend({
                 constructor: function () {
@@ -60,15 +52,12 @@ define([
                         
                         switch (model.type) {
                             case 'oauth2':
-                                SwaggerUi = Oauth2Model.extend(SwaggerUi);
                                 result = new SwaggerUi.Models.Oauth2Model(model);
                                 break;
                             case 'basic':
-                                SwaggerUi = BasicAuthModel.extend(SwaggerUi);
                                 result = new SwaggerUi.Models.BasicAuthModel(model);
                                 break;
                             case 'apiKey':
-                                SwaggerUi = ApiKeyAuthModel.extend(SwaggerUi);
                                 result = new SwaggerUi.Models.ApiKeyAuthModel(model);
                                 break;
                             default:

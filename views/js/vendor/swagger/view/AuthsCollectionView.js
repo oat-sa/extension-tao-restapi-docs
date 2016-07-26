@@ -7,19 +7,11 @@
 define([
     'jquery',
     'core/eventifier',
-    'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/view/AuthsCollection',
-    'taoRestApiDocs/vendor/swagger/view/ApiKeyAuthView',
-    'taoRestApiDocs/vendor/swagger/view/BasicAuthView',
-    'taoRestApiDocs/vendor/swagger/view/Oauth2View'
+    'taoRestApiDocs/vendor/lib/backbone-min'
 ], function (
     $,
     eventifier,
-    Backbone,
-    AuthsCollection,
-    ApiKeyAuthView,
-    BasicAuthView,
-    Oauth2View
+    Backbone
 ){
     'use strict';
     
@@ -27,16 +19,12 @@ define([
 
         extend: function extend(SwaggerUi) {
             
-            var selfEvent = this;
-
             SwaggerUi.Views.AuthsCollectionView = Backbone.View.extend({
 
                 initialize: function (opts) {
                     this.options = opts || {};
                     this.options.data = this.options.data || {};
                     this.router = this.options.router;
-
-                    SwaggerUi = AuthsCollection.extend(SwaggerUi);
 
                     this.collection = new SwaggerUi.Collections.AuthsCollection(opts.data);
 
@@ -68,10 +56,6 @@ define([
 
                     if (authViewName) {
 
-                        SwaggerUi = ApiKeyAuthView.extend(SwaggerUi);
-                        SwaggerUi = BasicAuthView.extend(SwaggerUi);
-                        SwaggerUi = Oauth2View.extend(SwaggerUi);
-                        
                         authView = new SwaggerUi.Views[authViewName]({model: authModel, router: this.router});
                         authViewEl = authView.render().el;
                         this.authViews.push(authView);

@@ -18,8 +18,6 @@ define([
     return eventifier({
         extend: function extend(SwaggerUi) {
 
-            var selfEvent = this;
-
             SwaggerUi.Views.OperationView = Backbone.View.extend({
                 invocationUrl: null,
 

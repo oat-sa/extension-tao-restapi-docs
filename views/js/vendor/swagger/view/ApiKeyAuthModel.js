@@ -6,19 +6,15 @@
 
 define([
     'jquery',
-    'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min'
 ], function ($,
-             eventifier,
              Backbone) {
     'use strict';
+    
 
-
-    return eventifier({
+    return {
 
         extend: function extend(SwaggerUi) {
-
-            var selfEvent = this;
 
             SwaggerUi.Models.ApiKeyAuthModel = Backbone.Model.extend({
                 defaults: {
@@ -40,7 +36,8 @@ define([
                     return valid;
                 }
             });
+    
             return SwaggerUi;
         }
-    });
+    };
 });

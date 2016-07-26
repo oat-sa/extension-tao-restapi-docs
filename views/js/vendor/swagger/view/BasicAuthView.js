@@ -7,18 +7,19 @@
 define([
     'jquery',
     'core/eventifier',
-    'taoRestApiDocs/vendor/lib/backbone-min'
+    'taoRestApiDocs/vendor/lib/backbone-min',
+    'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
+    'taoRestApiDocs/vendor/swagger/templates'
 ], function ($,
              eventifier,
-             Backbone) {
+             Backbone,
+             Handlebars) {
     'use strict';
 
 
     return eventifier({
 
         extend: function extend(SwaggerUi) {
-
-            var selfEvent = this;
 
             SwaggerUi.Views.BasicAuthView = Backbone.View.extend({
 

@@ -18,8 +18,6 @@ define([
 
         extend: function extend(SwaggerUi) {
 
-            var selfEvent = this;
-
             SwaggerUi.Views.ApiKeyAuthView = Backbone.View.extend({ // TODO: append this to global SwaggerUi
 
                 events: {

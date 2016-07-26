@@ -26,19 +26,32 @@ define([
     'taoRestApiDocs/vendor/swagger/SwaggerUi',
     'taoRestApiDocs/vendor/swagger/helpers/handlebars',
     'taoRestApiDocs/vendor/swagger/utils/utils',
-    'taoRestApiDocs/vendor/swagger/view/HeaderView',
     'taoRestApiDocs/vendor/lib/jsoneditor.min',
     'taoRestApiDocs/vendor/lib/SwaggerClient',
-    
-    'taoRestApiDocs/vendor/swagger/view/MainView',
-    'taoRestApiDocs/vendor/swagger/view/ResourceView',
-    'taoRestApiDocs/vendor/swagger/view/OperationView',
     'taoRestApiDocs/vendor/swagger/doc',
-    'taoRestApiDocs/vendor/swagger/view/AuthButtonView',
+    
+    // Data viewers
     'taoRestApiDocs/vendor/swagger/view/partials/signature',
-    'taoRestApiDocs/vendor/swagger/view/SignatureView',
-    'taoRestApiDocs/vendor/swagger/view/ResponseContentTypeView',
+    'taoRestApiDocs/vendor/swagger/view/ApiKeyAuthModel',
+    'taoRestApiDocs/vendor/swagger/view/ApiKeyAuthView',
+    'taoRestApiDocs/vendor/swagger/view/AuthButtonView',
+    'taoRestApiDocs/vendor/swagger/view/AuthsCollection',
+    'taoRestApiDocs/vendor/swagger/view/AuthsCollectionView',
+    'taoRestApiDocs/vendor/swagger/view/AuthView',
+    'taoRestApiDocs/vendor/swagger/view/BasicAuthModel',
+    'taoRestApiDocs/vendor/swagger/view/BasicAuthView',
+    'taoRestApiDocs/vendor/swagger/view/ContentTypeView',
+    'taoRestApiDocs/vendor/swagger/view/HeaderView',
+    'taoRestApiDocs/vendor/swagger/view/MainView',
+    'taoRestApiDocs/vendor/swagger/view/Oauth2Model',
+    'taoRestApiDocs/vendor/swagger/view/Oauth2View',
+    'taoRestApiDocs/vendor/swagger/view/OperationView',
+    'taoRestApiDocs/vendor/swagger/view/ParameterContentTypeView',
     'taoRestApiDocs/vendor/swagger/view/ParameterView',
+    'taoRestApiDocs/vendor/swagger/view/PopupView',
+    'taoRestApiDocs/vendor/swagger/view/ResourceView',
+    'taoRestApiDocs/vendor/swagger/view/ResponseContentTypeView',
+    'taoRestApiDocs/vendor/swagger/view/SignatureView',
     'taoRestApiDocs/vendor/swagger/view/StatusCodeView',
     
     // helpers
@@ -55,19 +68,31 @@ define([
     SwaggerUi,
     Handlebars,
     Utils,
-    HeaderView,
     JsonEditor,
     SwaggerClient,
-    
-    MainView,
-    ResourceView,
-    OperationView,
     Docs,
+
+    PartialSignature,
+    ApiKeyAuthModel,
+    ApiKeyAuthView,
     AuthButtonView,
-    PartialsSignature,
-    SignatureView,
-    ResponseContentTypeView,
+    AuthCollection,
+    AuthCollectionView,
+    AuthView,
+    BasicAuthModel,
+    BasicAuthView,
+    ContentTypeView,
+    HeaderView,
+    MainView,
+    Oauth2Model,
+    Oauth2View,
+    OperationView,
+    ParameterContentTypeView,
     ParameterView,
+    PopupView,
+    ResourceView,
+    ResponseContentTypeView,
+    SignatureView,
     StatusCodeView
 ) {
     'use strict';
@@ -126,10 +151,38 @@ define([
             swaggerUi.Collections = {};
             swaggerUi.partials = {};
             swaggerUi.utils = {};
+
+            swaggerUi = PartialSignature.extend(swaggerUi);
+            swaggerUi = ApiKeyAuthModel.extend(swaggerUi);
+            swaggerUi = ApiKeyAuthView.extend(swaggerUi);
+            swaggerUi = AuthButtonView.extend(swaggerUi);
+            swaggerUi = AuthCollection.extend(swaggerUi);
+            swaggerUi = AuthCollectionView.extend(swaggerUi);
+            swaggerUi = AuthView.extend(swaggerUi);
+            swaggerUi = BasicAuthModel.extend(swaggerUi);
+            swaggerUi = BasicAuthView.extend(swaggerUi);
+            swaggerUi = ContentTypeView.extend(swaggerUi);
+            swaggerUi = HeaderView.extend(swaggerUi);
+            swaggerUi = MainView.extend(swaggerUi);
+            swaggerUi = Oauth2Model.extend(swaggerUi);
+            swaggerUi = Oauth2View.extend(swaggerUi);
+            swaggerUi = OperationView.extend(swaggerUi);
+            swaggerUi = ParameterContentTypeView.extend(swaggerUi);
+            swaggerUi = ParameterView.extend(swaggerUi);
+            swaggerUi = PopupView.extend(swaggerUi);
+            swaggerUi = ResourceView.extend(swaggerUi);
+            swaggerUi = ResponseContentTypeView.extend(swaggerUi);
+            swaggerUi = SignatureView.extend(swaggerUi);
+            swaggerUi = StatusCodeView.extend(swaggerUi);
+
+            swaggerUi = Utils.bind(swaggerUi);
+            
+            
+            
             
             SwaggerUi.on('load', function(){
                 // Create view to handle the header inputs
-                swaggerUi = HeaderView.extend(swaggerUi);
+                
                 swaggerUi.headerView = new swaggerUi.Views.HeaderView({el: $('#header')});
 
                 // Event handler for when the baseUrl/apiKey is entered by user
@@ -142,18 +195,6 @@ define([
                 swaggerUi.api = new SwaggerClient(swaggerUi.options);
                 
             });
-
-
-            swaggerUi = MainView.extend(swaggerUi);
-            swaggerUi = PartialsSignature.extend(swaggerUi);
-            swaggerUi = SignatureView.extend(swaggerUi);
-            swaggerUi = ParameterView.extend(swaggerUi);
-            swaggerUi = StatusCodeView.extend(swaggerUi);
-            swaggerUi = ResponseContentTypeView.extend(swaggerUi);
-            swaggerUi = ResourceView.extend(swaggerUi);
-            swaggerUi = OperationView.extend(swaggerUi);
-            swaggerUi = Utils.bind(swaggerUi);
-            swaggerUi = AuthButtonView.extend(swaggerUi);
 
 
             SwaggerUi.on('render', function() {
