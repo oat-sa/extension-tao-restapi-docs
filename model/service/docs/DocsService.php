@@ -106,7 +106,7 @@ class DocsService extends ConfigurableService implements DocsInterface
     public function saveDocs()
     {
         if (!$this->generatedDocs) {
-            throw new RestApiDocsException(__('Please, run generateDocs before save'));
+            throw new RestApiDocsException(__('Please generate documentation before save'));
         }
 
         $this->dropDocs();
@@ -159,7 +159,7 @@ class DocsService extends ConfigurableService implements DocsInterface
     {
         if (!$this->generatedDocs) {
             if (!$this->getStorage()->has($this->getOption(self::OPTION_FILE_NAME))) {
-                throw new RestApiDocsException(__('Please, run generateDocs before'));
+                throw new RestApiDocsException(__('Documentation not found'));
             }
             if ($this->getStorage()->has($this->getOption(self::OPTION_FILE_NAME))) {
                 $this->generatedDocs = json_decode($this->getStorage()->read($this->getOption(self::OPTION_FILE_NAME)));

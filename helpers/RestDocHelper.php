@@ -23,21 +23,71 @@ namespace oat\taoRestApiDocs\helpers;
 
 
 use oat\taoRestApiDocs\model\exception\RestApiDocsException;
+use oat\taoRestApiDocs\model\service\docs\DocsService;
 
 class RestDocHelper
 {
-    public static function getDocByExtension($ext = '')
+    
+    const DIRECTORY_NAME = 'doc';
+    
+    /**
+     * Collects all documentation files from TAO project extensions
+     * 
+     * @return array
+     */
+    public static function getExtensionsDocsPaths()
     {
-        $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById($ext);
-        return self::getJsonFromFile($ext->getDir() . 'doc' . DIRECTORY_SEPARATOR . 'rest.json');
+        $extensions = \common_ext_ExtensionsManager::singleton()->getEnabledExtensions();
+        $paths = [];
+        /** @var \common_ext_Extension $ext */
+        foreach ($extensions as $ext) {
+            
+            if ($ext->getName() == 'taoRestApiDocs') {
+                continue;
+            }
+            
+            try {
+                $paths[] = self::getDocPathByExtension($ext);
+            } catch (RestApiDocsException $e) {
+                continue;
+            }
+        }
+        
+        return $paths;
     }
 
-    public static function getJsonFromFile($path = '')
+    /**
+     * @param string $extName
+     * @return \stdClass JSON
+     */
+    public static function getDocByExtension($extName = '')
+    {
+        $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById($extName);
+        return self::getJsonFromFile(self::getDocPathByExtension($ext));
+    }
+    
+    /**
+     * @param $ext
+     * @return string
+     * @throws RestApiDocsException
+     */
+    private static function getDocPathByExtension($ext)
+    {
+        $path = $ext->getDir() . self::DIRECTORY_NAME . DIRECTORY_SEPARATOR . DocsService::FILE_NAME;
+        self::checkFile($path);
+        return $path;
+    }
+    
+    private static function checkFile($path = '')
     {
         if (!file_exists($path)) {
             throw new RestApiDocsException(__('File with documentation not found'));
         }
-
+    }
+    
+    public static function getJsonFromFile($path = '')
+    {
+        self::checkFile($path);
         return json_decode(file_get_contents($path));
     }
 }

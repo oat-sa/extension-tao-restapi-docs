@@ -24,6 +24,8 @@ namespace oat\taoRestApiDocs\scripts\install;
 
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ServiceManager;
+use oat\taoRestApiDocs\model\service\docs\DocsService;
+use oat\taoRestApiDocs\scripts\GenerateDocumentation;
 
 class RegisterRestApiDocsStorage extends \common_ext_action_InstallAction
 {
@@ -31,7 +33,10 @@ class RegisterRestApiDocsStorage extends \common_ext_action_InstallAction
     {
         $serviceManager = ServiceManager::getServiceManager();
         $fs = $serviceManager->get(FileSystemService::SERVICE_ID);
-        $fs->createLocalFileSystem('taoRestApiDocs');
+        $fs->createLocalFileSystem(DocsService::STORAGE_NAME);
         $serviceManager->register(FileSystemService::SERVICE_ID, $fs);
+        
+        $generator = new GenerateDocumentation();
+        return $generator($params);
     }
 }
