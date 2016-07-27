@@ -178,8 +178,6 @@ define([
             swaggerUi = Utils.bind(swaggerUi);
             
             
-            
-            
             SwaggerUi.on('load', function(){
                 // Create view to handle the header inputs
                 
@@ -196,44 +194,20 @@ define([
                 
             });
 
+            SwaggerUi.on('collapse', function() {
+                Docs.collapseEndpointListForResource('');
+            });
+
+            SwaggerUi.on('list', function() {
+                Docs.collapseOperationsForResource('');
+            });
+            
+            SwaggerUi.on('expand', function() {
+                Docs.expandOperationsForResource('');
+            });
 
             SwaggerUi.on('render', function() {
                 var authsModel;
-                
-                MainView.on('resource', function(options) {
-                    
-                    var resourceView = new swaggerUi.Views.ResourceView({
-                        model: options.resource,
-                        router: options.self.router,
-                        tagName: 'li',
-                        id: 'resource_' + options.resource.id,
-                        className: 'resource',
-                        auths: options.auths,
-                        swaggerOptions: options.self.options.swaggerOptions
-                    });
-                    
-                    
-                    ResourceView.on('operation', function(opt) {
-                        
-                        // Render an operation and add it to operations li
-                        var operationView = new swaggerUi.Views.OperationView({
-                            model: opt.operation,
-                            router: opt.self.router,
-                            tagName: 'li',
-                            className: 'endpoint',
-                            swaggerOptions: opt.self.options.swaggerOptions,
-                            auths: opt.self.auths
-                        });
-
-                        $('.endpoints', $(opt.self.el)).append(operationView.render().el);
-                    });
-
-                    ResourceView.on('call', function(param){
-                        Docs[param.fnName](param.e.currentTarget.getAttribute('data-id'));
-                    });
-                    
-                    $('#resources', options.self.el).append(resourceView.render().el);
-                });
                 
                 swaggerUi.mainView = new swaggerUi.Views.MainView({
                     model: swaggerUi.api,
@@ -274,6 +248,51 @@ define([
                 }
 
                 setTimeout(Docs.shebang.bind(swaggerUi), 100);
+            });
+
+
+            MainView.on('resource', function(options) {
+
+                var resourceView = new swaggerUi.Views.ResourceView({
+                    model: options.resource,
+                    router: options.self.router,
+                    tagName: 'li',
+                    id: 'resource_' + options.resource.id,
+                    className: 'resource',
+                    auths: options.auths,
+                    swaggerOptions: options.self.options.swaggerOptions
+                });
+
+                $('#resources', options.self.el).append(resourceView.render().el);
+            });
+            
+            ResourceView.off('operation').on('operation', function(opt) {
+                // Render an operation and add it to operations li
+                var operationView = new swaggerUi.Views.OperationView({
+                    model: opt.operation,
+                    router: opt.self.router,
+                    tagName: 'li',
+                    className: 'endpoint',
+                    swaggerOptions: opt.self.options.swaggerOptions,
+                    auths: opt.self.auths
+                });
+
+                $('.endpoints', $(opt.self.el)).append(operationView.render().el);
+            });
+
+            ResourceView.on('call', function(param){
+                Docs[param.fnName](param.e.currentTarget.getAttribute('data-id'));
+            });
+            
+            OperationView.on('toggle', function(opts){
+                var elem = $('#' + Docs.escapeResourceName(opts.self.parentId + '_' + opts.self.nickname + '_content'));
+                if (elem.is(':visible')) {
+                    $.bbq.pushState('#/', 2);
+                    opts.event.preventDefault();
+                    Docs.collapseOperation(elem);
+                } else {
+                    Docs.expandOperation(elem);
+                }
             });
             
             swaggerUi.load();

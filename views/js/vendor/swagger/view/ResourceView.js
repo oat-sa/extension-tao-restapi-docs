@@ -36,7 +36,7 @@ define([
 
                 render: function () {
                     var methods = {};
-
+                    this.number = 0;
 
                     $(this.el).html(Handlebars.templates.resource(this.model));
 

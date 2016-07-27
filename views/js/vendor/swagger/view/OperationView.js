@@ -9,16 +9,17 @@ define([
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/lodash.min',
     'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/doc',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
     'taoRestApiDocs/vendor/swagger/templates'
-], function ($, eventifier, _, Backbone, Docs, Handlebars) {
+], function ($, eventifier, _, Backbone, Handlebars) {
 
     'use strict';
 
     return eventifier({
         extend: function extend(SwaggerUi) {
 
+            var selfEvent = this;
+            
             SwaggerUi.Views.OperationView = Backbone.View.extend({
                 invocationUrl: null,
 
@@ -819,14 +820,7 @@ define([
                 },
 
                 toggleOperationContent: function (event) {
-                    var elem = $('#' + Docs.escapeResourceName(this.parentId + '_' + this.nickname + '_content'));
-                    if (elem.is(':visible')) {
-                        $.bbq.pushState('#/', 2);
-                        event.preventDefault();
-                        Docs.collapseOperation(elem);
-                    } else {
-                        Docs.expandOperation(elem);
-                    }
+                    selfEvent.trigger('toggle', {event: event, self: this});
                 },
 
                 getTextAreaValue: function (textArea) {

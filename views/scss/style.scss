@@ -1,2 +1,20 @@
 @import "styles/screen";
 @import "styles/style";
+
+.swagger-section {
+  
+  padding-left: 50px;
+  
+  .swagger-ui-wrap {
+
+    ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation div.content div.sandbox_header input.submit {
+      padding: 0 8px;
+    }
+
+    ul {
+      &.endpoints, &#resources {
+        padding: 0;
+      }
+    }
+  }
+}

@@ -10,10 +10,8 @@ define([
     'taoRestApiDocs/vendor/lib/lodash.min',
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
-    'taoRestApiDocs/vendor/swagger/doc',
-    'taoRestApiDocs/vendor/lib/marked',
-    'taoRestApiDocs/vendor/lib/SwaggerClient'
-], function ($, _, eventifier, Backbone, Docs, marked, SwaggerClient) {
+    'taoRestApiDocs/vendor/lib/marked'
+], function ($, _, eventifier, Backbone, marked) {
     'use strict';
 
     var SwaggerUi;
@@ -151,17 +149,17 @@ define([
 
                 // collapse all sections
                 collapseAll: function () {
-                    Docs.collapseEndpointListForResource('');
+                    selfEvent.trigger('collapse');
                 },
 
                 // list operations for all sections
                 listAll: function () {
-                    Docs.collapseOperationsForResource('');
+                    selfEvent.trigger('list');
                 },
 
                 // expand operations for all sections
                 expandAll: function () {
-                    Docs.expandOperationsForResource('');
+                    selfEvent.trigger('expand');
                 },
 
                 // This is bound to success handler for SwaggerApi
