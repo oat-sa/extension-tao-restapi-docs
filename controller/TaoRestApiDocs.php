@@ -20,6 +20,7 @@
  */
 
 namespace oat\taoRestApiDocs\controller;
+use oat\taoRestApiDocs\model\exception\RestApiDocsException;
 use oat\taoRestApiDocs\model\service\docs\DocsService;
 
 /**
@@ -46,7 +47,14 @@ class TaoRestApiDocs extends \tao_actions_CommonModule
      */
     public function index()
     {
-        $this->setView('TaoRestApiDocs/swagger.tpl');
+
+        try {
+            $this->getServiceManager()->get(DocsService::SERVICE_ID)->getDocs();
+            $this->setView('TaoRestApiDocs/swagger.tpl');
+        } catch (RestApiDocsException $e) {
+            $this->setData('message', $e->getMessage());
+            $this->setView('TaoRestApiDocs/exception.tpl');
+        }
     }
 
     public function docs()

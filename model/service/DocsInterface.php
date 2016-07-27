@@ -26,6 +26,12 @@ interface DocsInterface
 {
     const SERVICE_ID = 'taoRestApiDocs/docs';
 
+    const OPTION_DOCS = 'docs';
+    const OPTION_PROXY = 'proxy';
+    const OPTION_FILE_NAME = 'file';
+    const FILE_NAME = 'rest.json';
+    const STORAGE_NAME = 'taoRestApiDocs';
+
     /**
      * Return cached documentation from the storage
      * @return mixed

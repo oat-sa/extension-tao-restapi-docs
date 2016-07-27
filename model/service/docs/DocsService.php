@@ -15,7 +15,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016  (original work) Open Assessment Technologies SA;
- * 
+ *
  * @author Alexander Zagovorichev <zagovorichev@1pt.com>
  */
 
@@ -33,15 +33,11 @@ use oat\taoRestApiDocs\model\service\DocsInterface;
 
 /**
  * Class DocsService
- * 
+ *
  * Generate documentation for Rest API from all extensions
  */
 class DocsService extends ConfigurableService implements DocsInterface
 {
-    const OPTION_DOCS = 'docs';
-    const OPTION_PROXY = 'proxy';
-    
-    const FILE_NAME = 'rest.json';
 
     /**
      * @var DocsProxyInterface
@@ -53,7 +49,7 @@ class DocsService extends ConfigurableService implements DocsInterface
      * @var
      */
     private $generatedDocs;
-    
+
     public function __construct(array $options)
     {
         parent::__construct($options);
@@ -63,13 +59,17 @@ class DocsService extends ConfigurableService implements DocsInterface
         if (!class_exists($proxyClass)) {
             throw new RestApiDocsException(__('Proxy does not exists'));
         }
-        
+
         $this->proxy = new $proxyClass;
         if (!($this->proxy instanceof DocsProxyInterface)) {
             throw new RestApiDocsException(__('Incorrect proxy for Restful documentations'));
         }
+
+        if (!$this->hasOption(self::OPTION_FILE_NAME)) {
+            $this->setOption(self::OPTION_FILE_NAME, self::FILE_NAME);
+        }
     }
-    
+
     public function addDoc($path = '')
     {
         if ($this->proxy->valid(RestDocHelper::getJsonFromFile($path))) {
@@ -83,23 +83,23 @@ class DocsService extends ConfigurableService implements DocsInterface
         } else {
             throw new RestApiDocsException(__('Incorrect file structure'));
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Load docs from config and generate for all files documentation
      * store documentation to data folder
      */
     public function generateDocs()
     {
-        
+
         $this->generatedDocs = RestDocHelper::getDocByExtension('taoRestApiDocs');
-        
+
         foreach ($this->getOption(self::OPTION_DOCS) as $path) {
             $this->generatedDocs = $this->proxy->append($this->generatedDocs, RestDocHelper::getJsonFromFile($path));
         }
-        
+
         return $this;
     }
 
@@ -108,12 +108,12 @@ class DocsService extends ConfigurableService implements DocsInterface
         if (!$this->generatedDocs) {
             throw new RestApiDocsException(__('Please, run generateDocs before save'));
         }
-        
+
         $this->dropDocs();
 
         //write json
-        $this->getStorage()->write(self::FILE_NAME, json_encode($this->generatedDocs));
-        
+        $this->getStorage()->write($this->getOption(self::OPTION_FILE_NAME), json_encode($this->generatedDocs));
+
         // save new configuration for the documentation
         $serviceManager = ServiceManager::getServiceManager();
         $fs = $serviceManager->get(FileSystemService::SERVICE_ID);
@@ -121,11 +121,28 @@ class DocsService extends ConfigurableService implements DocsInterface
         $serviceManager->register(FileSystemService::SERVICE_ID, $fs);
     }
 
+    public function dropDocs()
+    {
+        if ($this->getStorage()->has($this->getOption(self::OPTION_FILE_NAME))) {
+            $this->getStorage()->delete($this->getOption(self::OPTION_FILE_NAME));
+        }
+    }
+
+    /**
+     * @return \League\Flysystem\Filesystem
+     */
+    private function getStorage()
+    {
+        return ServiceManager::getServiceManager()
+            ->get(FileSystemService::SERVICE_ID)
+            ->getFileSystem(self::STORAGE_NAME);
+    }
+
     public function removeDoc($path = '')
     {
         $docs = $this->getOption(self::OPTION_DOCS);
         if (in_array($path, $docs)) {
-            
+
             $docs = array_unique($docs);
             unset($docs[array_search($path, $docs)]);
             // drop docs
@@ -141,27 +158,16 @@ class DocsService extends ConfigurableService implements DocsInterface
     public function getDocs()
     {
         if (!$this->generatedDocs) {
-            if (!$this->getStorage()->has(self::FILE_NAME)) {
+            if (!$this->getStorage()->has($this->getOption(self::OPTION_FILE_NAME))) {
                 throw new RestApiDocsException(__('Please, run generateDocs before'));
             }
-            $this->generatedDocs = json_decode($this->getStorage()->read(self::FILE_NAME));
+            if ($this->getStorage()->has($this->getOption(self::OPTION_FILE_NAME))) {
+                $this->generatedDocs = json_decode($this->getStorage()->read($this->getOption(self::OPTION_FILE_NAME)));
+            } else {
+                $this->generatedDocs = null;
+            }
         }
-        
+
         return $this->generatedDocs;
-    }
-
-    /**
-     * @return \League\Flysystem\Filesystem
-     */
-    private function getStorage()
-    {
-        return ServiceManager::getServiceManager()
-            ->get(FileSystemService::SERVICE_ID)
-            ->getFileSystem('taoRestApiDocs');
-    }
-
-    public function dropDocs()
-    {
-        $this->getStorage()->delete(self::FILE_NAME);
     }
 }

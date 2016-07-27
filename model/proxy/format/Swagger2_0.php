@@ -96,33 +96,52 @@ class Swagger2_0 implements DocsProxyInterface
 
         // add extension tag to all part paths
         $extensionTag = ['name' => $title, 'description' => 'Extension ' . $part->info->title];
+        $partTags = [];
         foreach ($part->paths as $path => $body) {
             foreach ($body as $param => $obj) {
+                
+                $hasTag = false;
                 if (isset($obj->tags)) {
-                    $hasTag = false;
                     foreach ($obj->tags as $tag) {
                         
                         if ( (is_object($tag) && $tag->name == $extensionTag['name'])
                             || $tag == $extensionTag['name']) {
                             $hasTag = true;
                             break;
+                        } else {
+                            $partTags[] = is_object($tag) ? '**' . $tag->name . '**' . ($tag->description ? ': ' . $tag->description : '') : $tag; 
                         }
                     }
-                    
-                    if (!$hasTag) {
-                        $part->paths->$path->$param->tags[] = $extensionTag['name'];
-                    }
+                } 
+                
+                if (!$hasTag) {
+                    $part->paths->$path->$param->tags = [$extensionTag['name']];
                 }
             }
-        } 
+        }
+        
+        $tagDesc = [];
+        foreach ($part->tags as $tag) {
+            $tagDesc[$tag->name] = $tag->description;
+        }
+        
+        // write all part tags into the documentation
+        if(count($partTags)) {
+            $partTags = array_unique($partTags);
+            array_walk($partTags, function (&$val) use ($tagDesc) {
+                if (isset($tagDesc[$val])) {
+                    $val = $tagDesc[$val];
+                }
+            });
+            $docs->info->description .= "\n\n####Operations:\n\n" . implode("\n   -", $partTags);
+        }
         
         $docs->paths =
             isset($docs->paths)
                 ? (object) array_merge((array) $docs->paths, (array) $part->paths)
                 : $part->paths;
-        
 
-        $docs->tags = array_merge((array) $docs->tags, [$extensionTag], (array)$part->tags);
+        $docs->tags = array_merge((array) $docs->tags, [$extensionTag]);
 
         return $docs;
     }
