@@ -10,20 +10,20 @@ define([
     'core/eventifier',
     'taoRestApiDocs/vendor/lib/backbone-min',
     'taoRestApiDocs/vendor/lib/handlebars-2.0.0',
+    'taoRestApiDocs/vendor/lib/SwaggerClient',
     'taoRestApiDocs/vendor/swagger/templates'
 ], function ($,
              _,
              eventifier,
              Backbone,
-             Handlebars) {
+             Handlebars,
+             SwaggerClient) {
     'use strict';
 
 
     return eventifier({
 
         extend: function extend(SwaggerUi) {
-
-            var selfEvent = this;
 
             /* global redirect_uri:true */
             /* global clientId */
