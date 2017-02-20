@@ -1,3 +1,4 @@
+<?php
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,14 +19,24 @@
  * @author Alexander Zagovorichev <zagovorichev@1pt.com>
  */
 
-define(function(){
-    'use strict';
-    
-    return {
-        'TaoRestApiDocs': {
-            'actions': {
-                'index': 'controller/TaoRestApiDocs/index'
-            }
-        }
-    };
-});
+namespace oat\taoRestApiDocs\scripts\install;
+
+
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\ServiceManager;
+use oat\taoRestApiDocs\model\service\docs\DocsService;
+use oat\taoRestApiDocs\scripts\GenerateDocumentation;
+
+class RegisterRestApiDocsStorage extends \common_ext_action_InstallAction
+{
+    public function __invoke($params)
+    {
+        $serviceManager = ServiceManager::getServiceManager();
+        $fs = $serviceManager->get(FileSystemService::SERVICE_ID);
+        $fs->createLocalFileSystem(DocsService::STORAGE_NAME);
+        $serviceManager->register(FileSystemService::SERVICE_ID, $fs);
+        
+        $generator = new GenerateDocumentation();
+        return $generator($params);
+    }
+}

@@ -15,11 +15,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016  (original work) Open Assessment Technologies SA;
- * 
+ *
  * @author Alexander Zagovorichev <zagovorichev@1pt.com>
  */
 
 namespace oat\taoRestApiDocs\controller;
+use oat\taoRestApiDocs\model\exception\RestApiDocsException;
+use oat\taoRestApiDocs\model\service\docs\DocsService;
 
 /**
  * Sample controller
@@ -29,19 +31,35 @@ namespace oat\taoRestApiDocs\controller;
  * @license GPL-2.0
  *
  */
-class TaoRestApiDocs extends \tao_actions_CommonModule {
+class TaoRestApiDocs extends \tao_actions_CommonModule
+{
 
     /**
      * initialize the services
      */
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
     }
 
     /**
      * A possible entry point to tao
      */
-    public function index() {
-        $this->setView('TaoRestApiDocs/swagger.tpl');
+    public function index()
+    {
+
+        try {
+            $this->getServiceManager()->get(DocsService::SERVICE_ID)->getDocs();
+            $this->setView('TaoRestApiDocs/swagger.tpl');
+        } catch (RestApiDocsException $e) {
+            $this->setData('message', $e->getMessage());
+            $this->setView('TaoRestApiDocs/exception.tpl');
+        }
+    }
+
+    public function docs()
+    {
+        /** @var DocsService $docsService */
+        return $this->returnJson($this->getServiceManager()->get(DocsService::SERVICE_ID)->getDocs());
     }
 }
