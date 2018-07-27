@@ -24,7 +24,7 @@ return array(
 	'label' => 'TAO Rest API documentation',
 	'description' => 'Documentation of the TAO Rest API. Collect and view.',
     'license' => 'GPL-2.0',
-    'version' => '1.0.0',
+    'version' => '1.0.1',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
         'tao' => '>=9.0.0',
