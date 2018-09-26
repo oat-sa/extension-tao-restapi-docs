@@ -24,7 +24,7 @@ return array(
 	'label' => 'TAO Rest API documentation',
 	'description' => 'Documentation of the TAO Rest API. Collect and view.',
     'license' => 'GPL-2.0',
-    'version' => '1.0.1',
+    'version' => '1.0.2',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
         'tao' => '>=9.0.0',
@@ -42,7 +42,8 @@ return array(
     ),
     'routes' => array(
         '/taoRestApiDocs' => 'oat\\taoRestApiDocs\\controller'
-    ),    
+    ),
+    'update' => 'oat\\taoRestApiDocs\\scripts\\update\\Updater',
 	'constants' => array(
 	    # views directory
 	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
