@@ -24,10 +24,10 @@ return array(
 	'label' => 'TAO Rest API documentation',
 	'description' => 'Documentation of the TAO Rest API. Collect and view.',
     'license' => 'GPL-2.0',
-    'version' => '0.0.1',
+    'version' => '1.0.2',
 	'author' => 'Open Assessment Technologies SA',
 	'requires' => array(
-        'tao' => '>=2.17.0',
+        'tao' => '>=9.0.0',
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoRestApiDocsManager',
     'acl' => array(
@@ -42,16 +42,14 @@ return array(
     ),
     'routes' => array(
         '/taoRestApiDocs' => 'oat\\taoRestApiDocs\\controller'
-    ),    
+    ),
+    'update' => 'oat\\taoRestApiDocs\\scripts\\update\\Updater',
 	'constants' => array(
 	    # views directory
 	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
 	    
 		#BASE URL (usually the domain root)
 		'BASE_URL' => ROOT_URL.'taoRestApiDocs/',
-	    
-	    #BASE WWW required by JS
-	    'BASE_WWW' => ROOT_URL.'taoRestApiDocs/views/'
 	),
     'extra' => array(
         'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
